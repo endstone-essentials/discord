@@ -58,7 +58,7 @@ class DiscordClient(discord.Client):
         if message.author.bot:
             return
 
-        if message.channel.id != self._config["channels"].get("chat", 0):
+        if message.channel.id != int(self._config["channels"].get("chat", 0)):
             return
 
-        self._to_endstone.put({"event": "message", "data": {"message": message}})
+        self._to_endstone.put({"event": "message", "data": {"message": f"<{message.author}> {message.content}"}})

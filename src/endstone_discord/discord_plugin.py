@@ -75,4 +75,4 @@ class DiscordPlugin(Plugin):
             event, data = msg["event"], msg["data"]
             match event:
                 case "message":
-                    self.server.broadcast_message(data["message"])
+                    self.server.broadcast_message("[Discord] " + data["message"])

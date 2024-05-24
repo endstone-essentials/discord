@@ -8,7 +8,7 @@ def main(queue: multiprocessing.SimpleQueue, config: dict):
     intents = discord.Intents.default()
     intents.message_content = True
     intents.members = True
-    client = discord.Client(queue=queue, config=config, intents=intents)
+    client = discord.Client(intents=intents)
 
     @tasks.loop(seconds=1)
     async def main_loop(channels: dict[str, discord.TextChannel]):

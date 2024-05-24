@@ -30,7 +30,6 @@ def main(queue: multiprocessing.SimpleQueue, config: dict):
         channels = {
             channel_type: client.get_channel(int(channel_id)) for channel_type, channel_id in config["channels"].items()
         }
-        print(channels)
         main_loop.start(channels)
 
     client.run(token=config["token"])

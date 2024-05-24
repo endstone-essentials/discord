@@ -1,0 +1,5 @@
+token = "PUT_YOUR_DISCORD_TOKEN_HERE"
+
+[channels]
+#join = "CHANNEL_ID"
+#leave = "CHANNEL_ID"

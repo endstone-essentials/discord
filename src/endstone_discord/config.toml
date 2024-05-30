@@ -1,7 +1,4 @@
-token = "PUT_YOUR_DISCORD_TOKEN_HERE"
+token = "ENTER_YOUR_TOKEN_HERE"
 
 [channels]
-#chat = "CHANNEL_ID"    # for all player chat messages
-#join = "CHANNEL_ID"    # for join messages
-#leave = "CHANNEL_ID"   # for leave message
-#status = "CHANNEL_ID"  # for server start/stop messages
+chat = "CHANNEL_ID"    # for chat, player, and status messages

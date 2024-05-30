@@ -3,7 +3,13 @@ import os
 import sys
 
 import discord
-from endstone.event import event_handler, PlayerChatEvent, PlayerJoinEvent, PlayerQuitEvent
+from endstone.event import (
+    event_handler,
+    PlayerChatEvent, 
+    PlayerJoinEvent, 
+    PlayerQuitEvent,
+    BroadcastMessageEvent
+)
 from endstone.plugin import Plugin
 
 from endstone_discord.client import DiscordClient
@@ -20,7 +26,6 @@ def run_discord_client(config: dict, to_discord: mp.SimpleQueue, from_discord: m
     intents.members = True
     client = DiscordClient(config=config, to_discord=to_discord, from_discord=from_discord, intents=intents)
     client.run(token=config["token"])
-
 
 # noinspection PyAttributeOutsideInit
 class DiscordPlugin(Plugin):

@@ -27,21 +27,23 @@ class DiscordClient(discord.Client):
             event, data = msg["event"], msg.get("data", None)
             match event:
                 case "join":
-                    player_name = data["player_name"]
+                    player_name, player_list = data["player_name"], data["player_list"]
                     if "chat" in channels:
                         embed = discord.Embed(
                             description=f"{player_name} joined the server!",
                             color=discord.Color.green(),
                         )
                         await channels["chat"].send(embed=embed)
+                        await channels["chat"].edit(topic=f"Total players currently joined: {len(player_list)}")
                 case "leave":
-                    player_name = data["player_name"]
+                    player_name, player_list = data["player_name"], data["player_list"]
                     if "chat" in channels:
                         embed = discord.Embed(
                             description=f"{player_name} left the server!",
                             color=discord.Color.red(),
                         )
                         await channels["chat"].send(embed=embed)
+                        await channels["chat"].edit(topic=f"Total players currently joined: {len(player_list)}")
                 case "chat":
                     player_name, message = data["player_name"], data["message"]
                     if "chat" in channels:
@@ -53,6 +55,7 @@ class DiscordClient(discord.Client):
                             color=discord.Color.red(),
                         )
                     await channels["chat"].send(embed=embed)
+                    await channels["chat"].edit(topic=f"Server offline.")
                     await self.close()
 
     async def on_ready(self) -> None:
@@ -66,6 +69,7 @@ class DiscordClient(discord.Client):
                 color=discord.Color.green(),
             )
             await channels["chat"].send(embed=embed)
+            await channels["chat"].edit(topic=f"Total player currently joined: 0")
         self.main_loop.start(channels)
 
     async def on_message(self, message: discord.Message) -> None:
@@ -73,4 +77,9 @@ class DiscordClient(discord.Client):
             return
         if message.channel.id != int(self._config["channels"].get("chat", 0)) or int(self._config["channels"].get("console", 0)):
             return
-        self._to_endstone.put({"event": "message", "data": {"message": f"<{message.author}> {message.content}"}})
+        self._to_endstone.put(
+            {
+                "event": "message",
+                "data": {"message": f"<{message.author}> {message.content}"}
+            }
+        )

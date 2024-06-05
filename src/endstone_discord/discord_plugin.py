@@ -8,7 +8,6 @@ from endstone.event import (
     PlayerChatEvent, 
     PlayerJoinEvent, 
     PlayerQuitEvent,
-    BroadcastMessageEvent
 )
 from endstone.plugin import Plugin
 
@@ -52,7 +51,7 @@ class DiscordPlugin(Plugin):
         self._to_discord.put(
             {
                 "event": "join",
-                "data": {"player_name": event.player.name},
+                "data": {"player_name": event.player.name, "player_list": [player.name for player in self.server.online_players]},
             }
         )
 
@@ -61,7 +60,7 @@ class DiscordPlugin(Plugin):
         self._to_discord.put(
             {
                 "event": "leave",
-                "data": {"player_name": event.player.name},
+                "data": {"player_name": event.player.name, "player_list": [player.name for player in self.server.online_players]},
             }
         )
 

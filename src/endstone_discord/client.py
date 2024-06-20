@@ -27,27 +27,37 @@ class DiscordClient(discord.Client):
             event, data = msg["event"], msg.get("data", None)
             match event:
                 case "join":
-                    player_name, player_list = data["player_name"], data["player_list"]
+                    player_name = data["player_name"]
                     if "chat" in channels:
                         embed = discord.Embed(
                             description=f"{player_name} joined the server!",
                             color=discord.Color.green(),
                         )
                         await channels["chat"].send(embed=embed)
-                        await channels["chat"].edit(topic=f"Total players currently joined: {len(player_list)}")
                 case "leave":
-                    player_name, player_list = data["player_name"], data["player_list"]
+                    player_name = data["player_name"]
                     if "chat" in channels:
                         embed = discord.Embed(
                             description=f"{player_name} left the server!",
                             color=discord.Color.red(),
                         )
                         await channels["chat"].send(embed=embed)
-                        await channels["chat"].edit(topic=f"Total players currently joined: {len(player_list)}")
                 case "chat":
                     player_name, message = data["player_name"], data["message"]
                     if "chat" in channels:
                         await channels["chat"].send(f"<{player_name}> {message}")
+                case "channel_topic":
+                    player_list = data["player_list"]
+                    if "chat" in channels:
+                        await channels["chat"].edit(topic=f"Total players currently joined: {len(player_list)}")
+                case "death":
+                    if "chat" in channels:
+                        death_message = data["death_message"]
+                        embed = discord.Embed(
+                            description=death_message,
+                            color=discord.Color.red(),
+                        )
+                        await channels["chat"].send(embed=embed)
                 case "close":
                     if "chat" in channels:
                         embed = discord.Embed(
@@ -75,11 +85,15 @@ class DiscordClient(discord.Client):
     async def on_message(self, message: discord.Message) -> None:
         if message.author.bot:
             return
-        if message.channel.id != int(self._config["channels"].get("chat", 0)) or int(self._config["channels"].get("console", 0)):
-            return
-        self._to_endstone.put(
-            {
-                "event": "message",
-                "data": {"message": f"<{message.author}> {message.content}"}
-            }
-        )
+        if message.channel.id == int(self._config["channels"].get("chat", 0)):
+            self._to_endstone.put(
+                {
+                    "event": "message",
+                    "data": {"message": f"<{message.author}> {message.content}"}
+                }
+            )
+        if message.channel.id == int(self._config["channels"].get("console", 0)):
+            self._to_endstone.put({
+                "event": "console",
+                "data": {"command": message.content}
+            })

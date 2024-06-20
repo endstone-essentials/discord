@@ -8,8 +8,10 @@ from endstone.event import (
     PlayerChatEvent, 
     PlayerJoinEvent, 
     PlayerQuitEvent,
+    PlayerDeathEvent
 )
 from endstone.plugin import Plugin
+from endstone import ColorFormat
 
 from endstone_discord.client import DiscordClient
 
@@ -40,6 +42,7 @@ class DiscordPlugin(Plugin):
         self._process.start()
 
         self.server.scheduler.run_task_timer(self, self.handle_from_discord, delay=0, period=20 * 1)
+        self.server.scheduler.run_task_timer(self, self.update_topic, delay=0, period=20 * 300)
 
     def on_disable(self):
         self._to_discord.put({"event": "close"})
@@ -51,7 +54,7 @@ class DiscordPlugin(Plugin):
         self._to_discord.put(
             {
                 "event": "join",
-                "data": {"player_name": event.player.name, "player_list": [player.name for player in self.server.online_players]},
+                "data": {"player_name": event.player.name}
             }
         )
 
@@ -60,7 +63,7 @@ class DiscordPlugin(Plugin):
         self._to_discord.put(
             {
                 "event": "leave",
-                "data": {"player_name": event.player.name, "player_list": [player.name for player in self.server.online_players]},
+                "data": {"player_name": event.player.name}
             }
         )
 
@@ -72,6 +75,15 @@ class DiscordPlugin(Plugin):
                 "data": {"player_name": event.player.name, "message": event.message},
             }
         )
+    
+    @event_handler
+    def on_player_death(self, event: PlayerDeathEvent) -> None:
+        self._to_discord.put(
+            {
+                "event": "death",
+                "data": {"death_message": event.death_message},
+            }
+        )
 
     def handle_from_discord(self):
         while not self._from_discord.empty():
@@ -80,3 +92,13 @@ class DiscordPlugin(Plugin):
             match event:
                 case "message":
                     self.server.broadcast_message("[Discord] " + data["message"])
+                case "console":
+                    self.server.dispatch_command(self.server.command_sender, data["command"])
+        
+    def update_topic(self):
+        self._to_discord.put(
+            {
+                "event": "channel_topic",
+                "data": {"player_list": [player.name for player in self.server.online_players]}
+            }
+        )

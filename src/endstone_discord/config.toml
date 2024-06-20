@@ -2,3 +2,4 @@ token = "ENTER_YOUR_TOKEN_HERE"
 
 [channels]
 chat = "CHANNEL_ID"    # for chat, player, and status messages
+console = "CHANNEL_ID" # for command execute

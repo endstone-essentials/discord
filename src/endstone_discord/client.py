@@ -19,6 +19,7 @@ class DiscordClient(discord.Client):
         self._config = config
         self._from_endstone = to_discord
         self._to_endstone = from_discord
+        self.pre_player_total = 0
 
     @tasks.loop(seconds=1)
     async def main_loop(self, channels: dict[str, discord.TextChannel]):
@@ -30,7 +31,7 @@ class DiscordClient(discord.Client):
                     player_name = data["player_name"]
                     if "chat" in channels:
                         embed = discord.Embed(
-                            description=f"{player_name} joined the server!",
+                            description=f"📥 {player_name} joined the server!",
                             color=discord.Color.green(),
                         )
                         await channels["chat"].send(embed=embed)
@@ -38,7 +39,7 @@ class DiscordClient(discord.Client):
                     player_name = data["player_name"]
                     if "chat" in channels:
                         embed = discord.Embed(
-                            description=f"{player_name} left the server!",
+                            description=f"📤 {player_name} left the server!",
                             color=discord.Color.red(),
                         )
                         await channels["chat"].send(embed=embed)
@@ -48,13 +49,13 @@ class DiscordClient(discord.Client):
                         await channels["chat"].send(f"<{player_name}> {message}")
                 case "channel_topic":
                     player_list = data["player_list"]
-                    if "chat" in channels:
+                    if "chat" in channels and len(player_list) != self.pre_player_total:
                         await channels["chat"].edit(topic=f"Total players currently joined: {len(player_list)}")
                 case "death":
                     if "chat" in channels:
                         death_message = data["death_message"]
                         embed = discord.Embed(
-                            description=death_message,
+                            description=f"💀 {death_message}",
                             color=discord.Color.red(),
                         )
                         await channels["chat"].send(embed=embed)

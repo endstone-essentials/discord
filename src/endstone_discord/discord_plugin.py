@@ -1,6 +1,7 @@
 import multiprocessing as mp
 import os
 import sys
+import time
 
 import discord
 from endstone.event import (
@@ -47,7 +48,8 @@ class DiscordPlugin(Plugin):
     def on_disable(self):
         self._to_discord.put({"event": "close"})
         if self._process.is_alive():
-            self._process.join()
+            time.sleep(10)
+            self._process.terminate()            
 
     @event_handler
     def on_player_join(self, event: PlayerJoinEvent) -> None:

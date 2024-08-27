@@ -4,14 +4,15 @@ build-backend = "hatchling.build"
 
 [project]
 name = "endstone-discord"
-version = "0.0.1"
+version = "0.1.0"
 dependencies = [
     "discord.py"
 ]
 authors = [
     { name = "Vincent Wu", email = "magicdroidx@gmail.com" },
+    { name = "ArkanDash", email = "suckgamer0@gmail.com" },
 ]
-description = "A Discord plugin for Endstone servers"
+description = "A Discord Integration plugin for Endstone servers"
 readme = "README.md"
 license = { file = "LICENSE" }
 keywords = ["endstone", "plugin", "discord"]

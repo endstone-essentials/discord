@@ -161,3 +161,9 @@ cython_debug/
 
 # Wheels
 wheelhouse/
+
+# Other
+requirements.txt
+start_server.bat
+bedrock_server/
+*.whl

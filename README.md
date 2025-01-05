@@ -21,7 +21,7 @@ To use this plugin, ensure you have:
 
 ## Installation
 
-1. **Download the plugin** from the release ppage and place it into the Endstone server's plugins folder.
+1. **Download the plugin** from the release page and place it into the Endstone server's plugins folder.
 2. Restart or reload your Endstone server to generate the configuration file.
 
 ---
